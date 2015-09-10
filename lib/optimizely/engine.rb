@@ -78,6 +78,33 @@ module Optimizely
       Experiment.new(response)
     end
 
+    # Returns the list of goals for a specified project.
+    #
+    # == Usage
+    #  optimizely = Optimizely.new({ api_token: 'oauth2_token' })
+    #  goals = optimizely.goals(12345) # Look up all experiments for a project.
+    #
+    def goals(project_id)
+      raise OptimizelyError::NoProjectID, "A Project ID is required to retrieve experiments." if project_id.nil?
+
+      response = self.get("projects/#{project_id}/goals")
+      response.collect { |response_json| Goal.new(response_json) }
+    end
+
+    # Returns the details for a specific experiment.
+    #
+    # == Usage
+    #  optimizely = Optimizely.new({ api_token: 'oauth2_token' })
+    #  goal = optimizely.goal(12345) # Look up the experiment.
+    #
+    def goal(id)
+      @url = "goals/#{id}"
+      raise OptimizelyError::NoExperimentID, "An Experiment ID is required to retrieve the experiment." if id.nil?
+
+      response = self.get(@url)
+      Goal.new(response)
+    end
+
     # Returns the list of variations for a specified experiment.
     #
     # == Usage
