@@ -1,3 +1,5 @@
+require 'JSON'
+
 module Optimizely
   class Engine
 
@@ -177,13 +179,14 @@ module Optimizely
       end
     end
 
-    def post
+    def post(url,opts)
       uri      = URI.parse("#{BASE_URL}#{url}/")
       https    = Net::HTTP.new(uri.host, uri.port)
       https.read_timeout = @options[:timeout] if @options[:timeout]
       https.verify_mode = OpenSSL::SSL::VERIFY_NONE
       https.use_ssl = true
       request  = Net::HTTP::Post.new(uri.request_uri, @headers)
+      request.body = opts.to_json
       response = https.request(request)
 
       # Response code error checking
