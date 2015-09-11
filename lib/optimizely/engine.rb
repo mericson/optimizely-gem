@@ -190,10 +190,14 @@ module Optimizely
       response = https.request(request)
 
       # Response code error checking
-      check_response(response.code, response.body) if response.code != '201'
+      if response.code != '200'
+        check_response(response.code, response.body)
+      else
+        parse_json(response.body)
+      end
     end
 
-    def put
+    def put(url,opts)
       uri      = URI.parse("#{BASE_URL}#{url}/")
       https    = Net::HTTP.new(uri.host, uri.port)
       https.read_timeout = @options[:timeout] if @options[:timeout]
