@@ -204,10 +204,15 @@ module Optimizely
       https.verify_mode = OpenSSL::SSL::VERIFY_NONE
       https.use_ssl = true
       request  = Net::HTTP::Put.new(uri.request_uri, @headers)
+      request.body = opts.to_json
       response = https.request(request)
 
       # Response code error checking
-      check_response(response.code, response.body) if response.code != '202'
+      if response.code != '202' 
+        check_response(response.code, response.body)
+      else
+        parse_json(response.body)
+      end
     end
 
     def delete
