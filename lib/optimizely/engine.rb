@@ -190,7 +190,7 @@ module Optimizely
       response = https.request(request)
 
       # Response code error checking
-      if response.code != '200'
+      if response.code != '201' 
         check_response(response.code, response.body)
       else
         parse_json(response.body)
