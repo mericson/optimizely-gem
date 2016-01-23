@@ -161,6 +161,20 @@ module Optimizely
       Audience.new(response)
     end
 
+
+    # Returns the list of variations for a specified experiment.
+    #
+    # == Usage
+    #  optimizely = Optimizely.new({ api_token: 'oauth2_token' })
+    #  variations = optimizely.variations(12345) # Look up all variations for an experiment.
+    #
+    def results(experiment_id)
+      raise OptimizelyError::NoExperimentID, "An Experiment ID is required to retrieve variations." if experiment_id.nil?
+      response = self.get("experiments/#{experiment_id}/results")
+      response.collect { |results_json| Results.new(results_json) }
+    end
+
+
     # Return the parsed JSON data for a request that is done to the Optimizely REST API.
     def get(url)
       uri      = URI.parse("#{BASE_URL}#{url}/")
